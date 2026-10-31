@@ -79,7 +79,8 @@ call plug#begin("~/.vim/plugged")
  Plug 'nvim-lualine/lualine.nvim'
 
  "Live code Strudel music from Neovim (drives Google Chrome via Puppeteer, so skip Puppeteer's own browser download)
- Plug 'gruvw/strudel.nvim', {'do': 'PUPPETEER_SKIP_DOWNLOAD=true npm ci'}
+" Upstream pins puppeteer 22, whose yargs 17 dependency crashes on newer Node (require is not defined in ES module scope), so upgrade it in place
+Plug 'gruvw/strudel.nvim', {'do': 'PUPPETEER_SKIP_DOWNLOAD=true npm ci && PUPPETEER_SKIP_DOWNLOAD=true npm install --no-save puppeteer@latest'}
 
 call plug#end()
 
