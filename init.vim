@@ -81,6 +81,9 @@ call plug#begin("~/.vim/plugged")
  "Live code Strudel music from Neovim (drives Google Chrome via Puppeteer, so skip Puppeteer's own browser download)
  Plug 'gruvw/strudel.nvim', {'do': 'PUPPETEER_SKIP_DOWNLOAD=true npm ci'}
 
+ "Live code Kabelsalat from Neovim (local plugin in this repo, reuses strudel.nvim's Puppeteer)
+ Plug fnamemodify(resolve(expand('<sfile>:p')), ':h') . '/kabelsalat.nvim'
+
 call plug#end()
 
 
@@ -268,6 +271,10 @@ end
 require("strudel").setup({
   browser_exec_path = browser_path,
 })
+
+require("kabelsalat").setup({
+  browser_exec_path = browser_path,
+})
 EOF
 :nnoremap <silent> <Leader>sl :lua require("strudel").launch()<CR>
 :nnoremap <silent> <Leader>sq :lua require("strudel").quit()<CR>
@@ -276,6 +283,14 @@ EOF
 :nnoremap <silent> <Leader>ss :lua require("strudel").stop()<CR>
 :nnoremap <silent> <Leader>sb :lua require("strudel").set_buffer()<CR>
 :nnoremap <silent> <Leader>sx :lua require("strudel").execute()<CR>
+
+" Kabelsalat keymaps (open a .js patch file, then <Leader>kl; saving re-evaluates the patch)
+:nnoremap <silent> <Leader>kl :lua require("kabelsalat").launch()<CR>
+:nnoremap <silent> <Leader>kq :lua require("kabelsalat").quit()<CR>
+:nnoremap <silent> <Leader>kt :lua require("kabelsalat").toggle()<CR>
+:nnoremap <silent> <Leader>ku :lua require("kabelsalat").update()<CR>
+:nnoremap <silent> <Leader>ks :lua require("kabelsalat").stop()<CR>
+:nnoremap <silent> <Leader>kb :lua require("kabelsalat").set_buffer()<CR>
 
 
 " Setup transparent keymaps
