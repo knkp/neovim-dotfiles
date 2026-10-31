@@ -87,23 +87,15 @@ call plug#end()
 
 " === Setup Mason, LSP, and Autocomplete ===
 lua << EOF
+-- Enable autocompletion from cmp-nvim-lsp for every LSP server
+vim.lsp.config("*", {
+  capabilities = require('cmp_nvim_lsp').default_capabilities(),
+})
+
+-- mason-lspconfig v2 automatically enables (vim.lsp.enable) every server Mason installs
 require("mason").setup()
 require("mason-lspconfig").setup({
   ensure_installed = { "tailwindcss", "html", "ts_ls" },  -- Auto-install these
-  automatic_installation = true,
-})
-
-local lspconfig = require("lspconfig")
-
--- Enable autocompletion from cmp-nvim-lsp
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-require("mason-lspconfig").setup_handlers({
-  function(server_name)
-    lspconfig[server_name].setup({
-      capabilities = capabilities
-    })
-  end,
 })
 
 local cmp = require'cmp'
