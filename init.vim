@@ -78,6 +78,9 @@ call plug#begin("~/.vim/plugged")
 
  Plug 'nvim-lualine/lualine.nvim'
 
+ "Live code Strudel music from Neovim (drives Google Chrome via Puppeteer, so skip Puppeteer's own browser download)
+ Plug 'gruvw/strudel.nvim', {'do': 'PUPPETEER_SKIP_DOWNLOAD=true npm ci'}
+
 call plug#end()
 
 
@@ -252,6 +255,35 @@ lua require("aerial").setup({})
 :nnoremap <silent> <Leader>fb :lua require("buffer_manager.ui").toggle_quick_menu()<CR>
 :nnoremap <silent> <Tab>      :lua require("buffer_manager.ui").nav_next()<CR>
 :nnoremap <silent> <S-Tab>    :lua require("buffer_manager.ui").nav_prev()<CR>
+
+
+" Setup strudel.nvim, pointing it at the system's Google Chrome (or Chromium as a fallback)
+"
+lua << EOF
+local browser_path = nil
+local mac_chrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+if vim.fn.executable(mac_chrome) == 1 then
+  browser_path = mac_chrome
+else
+  for _, exe in ipairs({ "google-chrome-stable", "google-chrome", "chromium", "chromium-browser" }) do
+    if vim.fn.executable(exe) == 1 then
+      browser_path = vim.fn.exepath(exe)
+      break
+    end
+  end
+end
+
+require("strudel").setup({
+  browser_exec_path = browser_path,
+})
+EOF
+:nnoremap <silent> <Leader>sl :lua require("strudel").launch()<CR>
+:nnoremap <silent> <Leader>sq :lua require("strudel").quit()<CR>
+:nnoremap <silent> <Leader>st :lua require("strudel").toggle()<CR>
+:nnoremap <silent> <Leader>su :lua require("strudel").update()<CR>
+:nnoremap <silent> <Leader>ss :lua require("strudel").stop()<CR>
+:nnoremap <silent> <Leader>sb :lua require("strudel").set_buffer()<CR>
+:nnoremap <silent> <Leader>sx :lua require("strudel").execute()<CR>
 
 
 " Setup transparent keymaps
